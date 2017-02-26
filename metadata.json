@@ -1,0 +1,9 @@
+{
+	"uuid": "snap@aner.id.au",
+	"name": "Snap",
+	"description": "Snap is an extension to assign keyboard shortcuts for your favorite applications",
+	"shell-version": [
+		"3.22"
+	],
+	"version": "0.0.1"
+}
