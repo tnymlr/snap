@@ -14,8 +14,7 @@ function enable() {
 	disable() //make sure we have no leftovers in case of restart/reload
 
 	snap = Me.imports.snap //this sets global variable
-	snap.main
-	.enable(settings)
+	snap.main.enable(settings)
 }
 
 function disable() {
