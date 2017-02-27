@@ -4,8 +4,8 @@ const keys = require('keys')
 const Menu = require('menu')
 const windows = require('windows')
 
-const Main = imports.ui.main
-const Lang = imports.lang
+const Main = require('ui/main')
+const Lang = require('lang')
 
 const KeyController = new Lang.Class({
 	Name: 'SnapKeyController',
@@ -21,7 +21,7 @@ const KeyController = new Lang.Class({
 				windows.Manager.getWindows().forEach((w) => {
 					let wmClass = w.wmClass.toLowerCase()
 
-					if(wmClass.indexOf(app.toLowerCase()) >= 0) {
+					if(wmClass.indexOf(settings.get(key).toLowerCase()) >= 0) {
 						w.raise()
 					}
 				})
@@ -94,4 +94,5 @@ const SnapExtension = new Lang.Class({
 	}
 })
 
-global.SnapExtension = new SnapExtension()
+module.exports = new SnapExtension()
+

@@ -1,5 +1,5 @@
-const Lang = imports.lang
-const Meta = imports.gi.Meta
+const Lang = require('lang')
+const Meta = require('gi/meta')
 
 let actors = new WeakMap()
 let windows = new WeakMap()

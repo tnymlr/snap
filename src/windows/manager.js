@@ -1,12 +1,13 @@
 const Window = require('windows/window')
 const log = require('utils/log')
+const gnome = require('gnome')
 
 
 module.exports = {
 	getWindows: function() {
 		log('Trying to find any windows')
 
-		return global.get_window_actors().map((a) => {
+		return gnome.get_window_actors().map((a) => {
 			log('Got a window!')
 			let w = new Window(a)
 

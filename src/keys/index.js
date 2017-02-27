@@ -1,9 +1,10 @@
 const log = require('utils/log')
+const gnome = require('gnome')
 
-const Lang = imports.lang
-const Meta = imports.gi.Meta
-const Shell = imports.gi.Shell
-const Main = imports.ui.main
+const Lang = require('lang')
+const Meta = require('gi/meta')
+const Shell = require('gi/shell')
+const Main = require('ui/main')
 
 module.exports = {
 	KeyManager: new Lang.Class({
@@ -12,7 +13,7 @@ module.exports = {
 		_init: function() {
 			this.grabbers = new Map()
 
-			this.handler = global.display.connect(
+			this.handler = gnome.display.connect(
 				'accelerator-activated',
 				Lang.bind(this, function(display, action, deviceId, timestamp){
 					log('Accelerator Activated: [display={}, action={}, deviceId={}, timestamp={}]',
@@ -23,7 +24,7 @@ module.exports = {
 
 		startListenFor: function(accelerator, callback){
 			log('Trying to listen for hot key [accelerator={}]', accelerator)
-			let action = global.display.grab_accelerator(accelerator)
+			let action = gnome.display.grab_accelerator(accelerator)
 
 			if(action == Meta.KeyBindingAction.NONE) {
 				log('Unable to grab accelerator [binding={}]', accelerator)
@@ -49,7 +50,7 @@ module.exports = {
 			log('Stopping listening for [binding={}, action={}, name={}]',
 				grabber.accelerator, action, grabber.name)
 
-			let success = global.display.ungrab_accelerator(action)
+			let success = gnome.display.ungrab_accelerator(action)
 			if(success) {
 				log('Stopped listening for [binding={}, action={}, name={}]',
 					grabber.accelerator, action, grabber.name)
@@ -71,7 +72,7 @@ module.exports = {
 			}
 
 			if(success) {
-				global.display.disconnect(this.handler)
+				gnome.display.disconnect(this.handler)
 				log('All registered key bindings have been released')
 			}
 		},

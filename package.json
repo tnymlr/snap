@@ -4,14 +4,14 @@
   "description": "Snap is gnome-shell extension which allows you to assign keyboard shortcuts for applications windows",
   "main": "src.js",
   "scripts": {
-    "build": "NODE_PATH=src browserify src/main.js -o snap.js",
-    "watch": "NODE_PATH=src watchify src/main.js -o snap.js --debug --verbose"
+		"watch": "nodemon --exec 'npm run build'",
+    "build": "webpack"
   },
   "author": "Anton Ermolenko",
   "license": "ISC",
   "devDependencies": {
-    "browserify": "^14.1.0",
-    "watchify": "^3.9.0"
+    "nodemon": "^1.11.0",
+    "webpack": "^2.2.1"
   },
   "dependencies": {
     "string-format": "^0.5.0"

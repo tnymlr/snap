@@ -1,23 +1,26 @@
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils
+const Me = ExtensionUtils.getCurrentExtension()
 
 let settings = new Map()
+let snap = null
 
 function init() {
-		settings.set('<alt>2', 'firefox')
+	settings.set('<alt>2', 'firefox')
+	settings.set('<alt><super>m', 'evolution')
+	settings.set('<alt><super>b', 'builder')
 }
 
 function enable() {
 	disable() //make sure we have no leftovers in case of restart/reload
 
-	let snap = Me.imports.snap //this sets global variable
-
-	global.SnapExtension.enable(settings)
+	snap = Me.imports.snap //this sets global variable
+	snap.main
+	.enable(settings)
 }
 
 function disable() {
-	if(global.SnapExtension) {
-		global.SnapExtension.disable()
-		global.SnapExtension = null
+	if(snap) {
+		snap.main.disable()
+		snap = null
 	}
 }

@@ -1,10 +1,10 @@
 const MenuItem = require('menu/item')
 const log = require('utils/log')
 
-const PanelMenu = imports.ui.panelMenu
-const Lang = imports.lang
-const Atk = imports.gi.Atk
-const St = imports.gi.St
+const PanelMenu = require('ui/panelMenu')
+const Lang = require('lang')
+const Atk = require('gi/atk')
+const St = require('gi/st')
 
 module.exports = new Lang.Class({
 	Name: 'SnapMenu',

@@ -1,6 +1,6 @@
-const PopupMenu = imports.ui.popupMenu
-const St = imports.gi.St
-const Lang = imports.lang
+const PopupMenu = require('ui/popupMenu')
+const St = require('gi/st')
+const Lang = require('lang')
 
 module.exports = new Lang.Class({
 	Name: 'SnapMenuItem',
