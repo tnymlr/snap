@@ -1,12 +1,15 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/main.js',
+  entry: {
+		main: './src/main.js',
+		ui: './src/ui.js'
+	},
   output: {
-    filename: 'snap.js',
+    filename: '[name].js',
     path: path.resolve(__dirname),
 		libraryTarget: 'var',
-		library: 'main'
+		library: '[name]'
   },
 	resolve: {
 		modules: [
