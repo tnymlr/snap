@@ -26,7 +26,12 @@ module.exports = {
 		'ui/popupMenu': 'imports.ui.popupMenu',
 		'ui/panelMenu': 'imports.ui.panelMenu',
 		'gi/atk': 'imports.gi.Atk',
-		'gi/st': 'imports.gi.St'
+		'gi/st': 'imports.gi.St',
+		'gi/gtk': 'imports.gi.Gtk',
+		'gi/gobject': 'imports.gi.GObject',
+		'gi/soup': 'imports.gi.Soup',
+		'misc/config': 'imports.misc.config',
+		'me': 'imports.misc.extensionUtils.getCurrentExtension()'
 	}
 };
 
