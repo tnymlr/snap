@@ -4,3 +4,7 @@ ui.js
 !src/ui.js
 *.swp
 *~
+.anjuta
+*.anjuta
+*.anjuta*
+*.swo

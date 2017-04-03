@@ -29,6 +29,7 @@ module.exports = {
 		'gi/st': 'imports.gi.St',
 		'gi/gtk': 'imports.gi.Gtk',
 		'gi/gobject': 'imports.gi.GObject',
+		'gi/gio': 'imports.gi.Gio',
 		'gi/soup': 'imports.gi.Soup',
 		'misc/config': 'imports.misc.config',
 		'me': 'imports.misc.extensionUtils.getCurrentExtension()'
