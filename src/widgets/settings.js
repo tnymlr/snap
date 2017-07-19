@@ -25,8 +25,8 @@ module.exports = new Lang.Class({
 		this.builder.add_from_file(data.glade('snap-settings'))
 
 		this.mainWidget = this.builder.get_object('settings-box')
-		this.addButton = this.builder.get_object('settings-add-button')
 		this.shortcutsList = this.builder.get_object('shortcuts-list')
+		this.addButton = this.builder.get_object('settings-add-button')
 		this.addButton.connect('clicked', Lang.bind(this, this.addShortcut))
 
 		this.add(this.mainWidget)

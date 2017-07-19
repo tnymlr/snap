@@ -28,9 +28,12 @@ module.exports = {
 		'gi/atk': 'imports.gi.Atk',
 		'gi/st': 'imports.gi.St',
 		'gi/gtk': 'imports.gi.Gtk',
+		'gi/gdk': 'imports.gi.Gdk',
 		'gi/gobject': 'imports.gi.GObject',
 		'gi/gio': 'imports.gi.Gio',
 		'gi/soup': 'imports.gi.Soup',
+		'gi/glib': 'imports.gi.GLib',
+		'gi/clutter': 'imports.gi.Clutter',
 		'misc/config': 'imports.misc.config',
 		'me': 'imports.misc.extensionUtils.getCurrentExtension()'
 	}
