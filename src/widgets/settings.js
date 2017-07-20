@@ -4,7 +4,7 @@ const Gtk = require('gi/gtk')
 
 const data = require('utils/data')
 
-const SnapShortcutWidget = require('./shortcut')
+const shortcut = require('./shortcut')
 
 module.exports = new Lang.Class({
 	Name: 'Snap.Settings.Widget',
@@ -33,12 +33,13 @@ module.exports = new Lang.Class({
 	},
 
 	addShortcut: function(){
-		let shortcut = new SnapShortcutWidget()
-		shortcut.connect('deleted', Lang.bind(this, this.deleteShortcut))
-		this.shortcutsList.insert(shortcut, -1)
+		const widget = new shortcut.Widget()
+		widget.connect(shortcut.events.DELETED,
+			Lang.bind(this, this.deleteShortcut))
+		this.shortcutsList.insert(widget, -1)
 	},
 
-	deleteShortcut: function(shortcut) {
-		this.shortcutsList.remove(shortcut)
+	deleteShortcut: function(widget) {
+		this.shortcutsList.remove(widget)
 	}
 })

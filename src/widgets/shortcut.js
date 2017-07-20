@@ -11,6 +11,12 @@ const shortcut = require('keys/shortcut')
 const data = require('utils/data')
 const log = require('utils/log')
 
+const Events = {
+	DELETED: 'deleted',
+	SHORTCUT_INPUT: 'shortcut-input',
+	SHORTCUT_ERASED: 'shortcut-erased'
+}
+
 const EventHandler = new Lang.Class({
 	Name: 'Snap.Shortcut.Widget.Event.Handler',
 	GTypeName: 'SnapShortcutWidgetEventHandler',
@@ -20,40 +26,42 @@ const EventHandler = new Lang.Class({
 	},
 
 	deleteButtonClicked: function() {
-		this.emit('deleted', widget)
+		this.idget.emit(Events.DELETED, widget)
 	},
 
 	entryKeyPressed: function(entry, event) {
 		const result = shortcut(event.get_state(), event.get_keyval())
 
 		if(result.valid) {
-			log("Parsed shortcut: {}", result.string)
+			this.widget.entry.set_text(result.string)
+			this.widget.emit(Events.SHORTCUT_INPUT, result.string)
+		} else if(result.string === '<BackSpace>') {
+			const erased = this.widget.entry.get_text()
+			this.widget.entry.set_text('')
+			log('Erased shortcut!')
+			this.widget.emit(Events.SHORTCUT_ERASED, erased)
 		} else {
-			log("Invalid shortcut!")
+			log("Invalid shortcut: {}", result.string)
 		}
 	},
 
 	entryKeyReleased: function(entry, event) {
-		//log("Got key release! [event={}, type={}, state={}, keyval={}]",
-		//	event,
-		//	event.get_event_type(),
-		//	event.get_state(),
-		//	event.get_keyval())
-
-		//let state = event.get_state()[1]
-		//let keyval = event.get_keyval()[1]
-		//let name = Gdk.keyval_name(keyval)
-		//log("Key: {}", name)
 	}
 })
 
-module.exports = new Lang.Class({
+const SnapShortcutWidget = new Lang.Class({
 	Name: 'Snap.Shortcut.Widget',
 	GTypeName: 'SnapShortcutWidget',
 	Extends: Gtk.ListBoxRow,
-	Signals: {
+	Signals: { //those must be linked with Events structur up there
 		'deleted': {
 			param_types: [ Gtk.ListBoxRow ]
+		},
+		'shortcut-input': {
+			param_types: [ GObject.String ]
+		},
+		'shortcut-erased': {
+			param_types: [ GObject.String ]
 		}
 	},
 
@@ -102,10 +110,13 @@ module.exports = new Lang.Class({
 	},
 
 	initEntry: function(builder, handler){
-		let entry = builder.get_object('shortcut-entry')
+		const entry = builder.get_object('shortcut-entry')
 		entry.connect('key-press-event', Lang.bind(handler, handler.entryKeyPressed))
 		entry.connect('key-release-event', Lang.bind(handler, handler.entryKeyReleased))
 
 		return entry
-	}
+	},
 })
+
+module.exports.Widget = SnapShortcutWidget
+module.exports.events = Events
