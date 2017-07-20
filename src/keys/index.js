@@ -1,4 +1,5 @@
 const log = require('utils/log')
+
 const gnome = require('gnome')
 
 const Lang = require('lang')

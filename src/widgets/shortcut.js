@@ -5,6 +5,9 @@ const Gdk = require('gi/gdk')
 const GLib = require('gi/glib')
 const Clutter = require('gi/clutter')
 
+const format = require('string-format')
+
+const shortcut = require('keys/shortcut')
 const data = require('utils/data')
 const log = require('utils/log')
 
@@ -21,32 +24,12 @@ const EventHandler = new Lang.Class({
 	},
 
 	entryKeyPressed: function(entry, event) {
-		let state = event.get_state()[1]
-		let keyval = Number(event.get_keyval()[1])
+		const result = shortcut(event.get_state(), event.get_keyval())
 
-		let name = Gdk.keyval_name(keyval)
-		log("Key: {}", name)
-
-		let keys = ""
-		let hasModifier = false
-		if(state & Gdk.ModifierType.CONTROL_MASK) {
-			keys = keys + "<ctrl>"
-			hasModifier = true
-		}
-
-		if(state & Gdk.ModifierType.MOD1_MASK) {
-			keys = keys + "<alt>"
-			hasModifier = true
-		}
-
-		if(state & Gdk.ModifierType.SUPER_MASK) {
-			keys = keys + "<super>"
-			hasModifier = true
-		}
-
-		if(hasModifier) {
-			keys = keys + name
-			log('Sequence: {}', keys)
+		if(result.valid) {
+			log("Parsed shortcut: {}", result.string)
+		} else {
+			log("Invalid shortcut!")
 		}
 	},
 
