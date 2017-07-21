@@ -26,23 +26,28 @@ const EventHandler = new Lang.Class({
 	},
 
 	deleteButtonClicked: function() {
-		this.idget.emit(Events.DELETED, widget)
+		this.widget.emit(Events.DELETED, widget)
 	},
 
 	entryKeyPressed: function(entry, event) {
 		const result = shortcut(event.get_state(), event.get_keyval())
 
 		if(result.valid) {
-			this.widget.entry.set_text(result.string)
+			entry.set_text(result.string)
 			this.widget.emit(Events.SHORTCUT_INPUT, result.string)
 		} else if(result.string === '<BackSpace>') {
-			const erased = this.widget.entry.get_text()
-			this.widget.entry.set_text('')
+			const erased = entry.get_text()
+			entry.set_text('')
 			log('Erased shortcut!')
 			this.widget.emit(Events.SHORTCUT_ERASED, erased)
 		} else {
 			log("Invalid shortcut: {}", result.string)
 		}
+
+		entry.vfunc_move_cursor(
+			Gtk.MovementStep.LOGICAL_POSITIONS,
+			entry.get_text_length(),
+			false)
 	},
 
 	entryKeyReleased: function(entry, event) {
