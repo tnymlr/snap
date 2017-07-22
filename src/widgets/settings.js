@@ -5,11 +5,12 @@ const Gtk = require('gi/gtk')
 const data = require('utils/data')
 const settings = require('settings')
 
+const buttons = require('./buttons')
 const shortcut = require('./shortcut')
 
 module.exports = new Lang.Class({
-	Name: 'Snap.Settings.Widget',
-	GTypeName: 'SnapSettingsWidget',
+	Name: 'Snap.Widgets.Settings',
+	GTypeName: 'SnapWidgetsSettings',
 	Extends: Gtk.Box,
 
 	_init: function(params) {
@@ -22,33 +23,29 @@ module.exports = new Lang.Class({
 		this.halign = Gtk.Align.FILL
 		this.valign = Gtk.Align.FILL
 
-		this.builder = new Gtk.Builder()
-		this.builder.add_from_file(data.glade('snap-settings'))
+		this.builder = this.initBuilder()
 
-		this.mainWidget = this.builder.get_object('settings-box')
-		this.shortcutsList = this.builder.get_object('shortcuts-list')
-		this.addButton = this.builder.get_object('settings-add-button')
-		this.applyButton = this.initApplyButton(this.builder)
-		this.addButton.connect('clicked', Lang.bind(this, this.addShortcut))
-
-		this.add(this.mainWidget)
+		this.mainWidget = this.initMainWidget(this.builder)
+		this.shortcutsList = this.initShortcutsList(this.builder)
+		this.addButton = new buttons.Add(this.builder, this)
+		this.applyButton = new buttons.Apply(this.builder, this)
 	},
 
-	initApplyButton: function(builder) {
-		const button = builder.get_object('settings-save-button')
-		button.connect('clicked', Lang.bind(this, this.applyButtonClicked))
-		return button
+	initBuilder: function() {
+		const builder = new Gtk.Builder()
+		builder.add_from_file(data.glade('snap-settings'))
+		return builder;
 	},
 
-	applyButtonClicked: function() {
-		settings()
+	initMainWidget: function(builder) {
+		const widget = builder.get_object('settings-box')
+		this.add(widget)
+		return widget
 	},
 
-	addShortcut: function(){
-		const widget = new shortcut.Widget()
-		widget.connect(shortcut.events.DELETED,
-			Lang.bind(this, this.deleteShortcut))
-		this.shortcutsList.insert(widget, -1)
+	initShortcutsList: function(builder) {
+		const list = builder.get_object('shortcuts-list')
+		return list
 	},
 
 	deleteShortcut: function(widget) {

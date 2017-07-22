@@ -25,8 +25,17 @@ const EventHandler = new Lang.Class({
 		this.widget = widget
 	},
 
+	appHasBeenChosen: function(appButton) {
+		const info = appButton.get_app_info()
+
+		log('Chosen app: [name={}, executable={}, commandline={}',
+			info.get_name(),
+			info.get_executable(),
+			info.get_commandline())
+	},
+
 	deleteButtonClicked: function() {
-		this.widget.emit(Events.DELETED, widget)
+		this.widget.emit(Events.DELETED, this.widget)
 	},
 
 	entryKeyPressed: function(entry, event) {
@@ -77,6 +86,7 @@ const SnapShortcutWidget = new Lang.Class({
 		this.keymap = this.initKeymap()
 		this.builder = this.initBuilder()
 		this.mainWidget = this.initMainWidget(this.builder)
+		this.appButton = this.initAppButton(this.builder, this.handler)
 		this.deleteButton = this.initDeleteButton(this.builder, this.handler)
 		this.entry = this.initEntry(this.builder, this.handler)
 
@@ -104,6 +114,15 @@ const SnapShortcutWidget = new Lang.Class({
 		log('Preparing main widget...')
 		const mainWidget = builder.get_object('shortcut-box')
 		return mainWidget
+	},
+
+	initAppButton: function(builder, handler) {
+		log('Preparing app button.. ')
+		const button = builder.get_object('shortcut-app-button')
+		button.connect('changed',
+			Lang.bind(handler, handler.appHasBeenChosen));
+
+		return button;
 	},
 
 	initDeleteButton: function(builder, handler) {
