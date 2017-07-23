@@ -4,8 +4,10 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkListStore" id="apps">
     <columns>
+      <!-- column-name id -->
+      <column type="gchararray"/>
       <!-- column-name icon -->
-      <column type="GObject"/>
+      <column type="GIcon"/>
       <!-- column-name name -->
       <column type="gchararray"/>
     </columns>
@@ -19,9 +21,9 @@
       <object class="GtkComboBox" id="shortcut-app-combo">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
+        <property name="focus_on_click">False</property>
         <property name="model">apps</property>
+        <property name="id_column">0</property>
       </object>
       <packing>
         <property name="expand">False</property>
