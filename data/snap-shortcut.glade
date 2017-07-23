@@ -2,21 +2,26 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="apps">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GObject"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkBox" id="shortcut-box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="valign">baseline</property>
     <property name="spacing">5</property>
     <child>
-      <object class="GtkAppChooserButton" id="shortcut-app-button">
+      <object class="GtkComboBox" id="shortcut-app-combo">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="valign">baseline</property>
-        <property name="margin_top">2</property>
-        <property name="margin_bottom">2</property>
-        <property name="content_type">all</property>
-        <property name="show_dialog_item">True</property>
-        <property name="show_default_item">True</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="model">apps</property>
       </object>
       <packing>
         <property name="expand">False</property>

@@ -11,6 +11,8 @@ const shortcut = require('keys/shortcut')
 const data = require('utils/data')
 const log = require('utils/log')
 
+const combos = require('./combos')
+
 const Events = {
 	DELETED: 'deleted',
 	SHORTCUT_INPUT: 'shortcut-input',
@@ -86,7 +88,7 @@ const SnapShortcutWidget = new Lang.Class({
 		this.keymap = this.initKeymap()
 		this.builder = this.initBuilder()
 		this.mainWidget = this.initMainWidget(this.builder)
-		this.appButton = this.initAppButton(this.builder, this.handler)
+		this.appsCombo = new combos.Apps(this.builder, this)
 		this.deleteButton = this.initDeleteButton(this.builder, this.handler)
 		this.entry = this.initEntry(this.builder, this.handler)
 
@@ -114,15 +116,6 @@ const SnapShortcutWidget = new Lang.Class({
 		log('Preparing main widget...')
 		const mainWidget = builder.get_object('shortcut-box')
 		return mainWidget
-	},
-
-	initAppButton: function(builder, handler) {
-		log('Preparing app button.. ')
-		const button = builder.get_object('shortcut-app-button')
-		button.connect('changed',
-			Lang.bind(handler, handler.appHasBeenChosen));
-
-		return button;
 	},
 
 	initDeleteButton: function(builder, handler) {
