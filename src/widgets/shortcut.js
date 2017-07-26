@@ -1,11 +1,6 @@
 const Lang = require('lang')
-const GObject = require('gi/gobject')
 const Gtk = require('gi/gtk')
 const Gdk = require('gi/gdk')
-const GLib = require('gi/glib')
-const Clutter = require('gi/clutter')
-
-const format = require('string-format')
 
 const shortcut = require('keys/shortcut')
 const data = require('utils/data')
@@ -14,7 +9,6 @@ const log = require('utils/log')
 
 const buttons = require('./buttons')
 const combos = require('./combos')
-
 
 const SnapShortcutWidget = new Lang.Class({
 	Name: 'Snap.Shortcut.Widget',
