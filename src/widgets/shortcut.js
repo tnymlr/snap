@@ -9,88 +9,28 @@ const format = require('string-format')
 
 const shortcut = require('keys/shortcut')
 const data = require('utils/data')
+const controller = require('widgets/controller')
 const log = require('utils/log')
 
+const buttons = require('./buttons')
 const combos = require('./combos')
 
-const Events = {
-	DELETED: 'deleted',
-	SHORTCUT_INPUT: 'shortcut-input',
-	SHORTCUT_ERASED: 'shortcut-erased'
-}
-
-const EventHandler = new Lang.Class({
-	Name: 'Snap.Shortcut.Widget.Event.Handler',
-	GTypeName: 'SnapShortcutWidgetEventHandler',
-
-	_init: function(widget) {
-		this.widget = widget
-	},
-
-	appHasBeenChosen: function(appButton) {
-		const info = appButton.get_app_info()
-
-		log('Chosen app: [name={}, executable={}, commandline={}',
-			info.get_name(),
-			info.get_executable(),
-			info.get_commandline())
-	},
-
-	deleteButtonClicked: function() {
-		this.widget.emit(Events.DELETED, this.widget)
-	},
-
-	entryKeyPressed: function(entry, event) {
-		const result = shortcut(event.get_state(), event.get_keyval())
-
-		if(result.valid) {
-			entry.set_text(result.string)
-			this.widget.emit(Events.SHORTCUT_INPUT, result.string)
-		} else if(result.string === '<BackSpace>') {
-			const erased = entry.get_text()
-			entry.set_text('')
-			log('Erased shortcut!')
-			this.widget.emit(Events.SHORTCUT_ERASED, erased)
-		} else {
-			log("Invalid shortcut: {}", result.string)
-		}
-
-		entry.vfunc_move_cursor(
-			Gtk.MovementStep.LOGICAL_POSITIONS,
-			entry.get_text_length(),
-			false)
-	},
-
-	entryKeyReleased: function(entry, event) {
-	}
-})
 
 const SnapShortcutWidget = new Lang.Class({
 	Name: 'Snap.Shortcut.Widget',
 	GTypeName: 'SnapShortcutWidget',
 	Extends: Gtk.ListBoxRow,
-	Signals: { //those must be linked with Events structur up there
-		'deleted': {
-			param_types: [ Gtk.ListBoxRow ]
-		},
-		'shortcut-input': {
-			param_types: [ GObject.String ]
-		},
-		'shortcut-erased': {
-			param_types: [ GObject.String ]
-		}
-	},
 
-	_init: function() {
+	_init: function(widget) {
 		this.parent({})
 
-		this.handler = new EventHandler(this)
+        this.widget = widget
 		this.keymap = this.initKeymap()
 		this.builder = this.initBuilder()
 		this.mainWidget = this.initMainWidget(this.builder)
 		this.appsCombo = new combos.Apps(this.builder, this)
-		this.deleteButton = this.initDeleteButton(this.builder, this.handler)
-		this.entry = this.initEntry(this.builder, this.handler)
+		this.deleteButton = new buttons.Delete(this.builder, this)
+		this.entry = this.initEntry(this.builder)
 
 		this.add(this.mainWidget)
 		this.show_all()
@@ -118,22 +58,33 @@ const SnapShortcutWidget = new Lang.Class({
 		return mainWidget
 	},
 
-	initDeleteButton: function(builder, handler) {
-		log('Preparing delete button...')
-		const button = builder.get_object('shortcut-delete-button')
-		button.connect('clicked', Lang.bind(handler, handler.deleteButtonClicked))
-
-		return button
-	},
-
-	initEntry: function(builder, handler){
+	initEntry: function(builder){
 		const entry = builder.get_object('shortcut-entry')
-		entry.connect('key-press-event', Lang.bind(handler, handler.entryKeyPressed))
-		entry.connect('key-release-event', Lang.bind(handler, handler.entryKeyReleased))
+		entry.connect('key-press-event', Lang.bind(this, this.entryKeyPressed))
 
 		return entry
 	},
+
+	entryKeyPressed: function(entry, event) {
+		const result = shortcut(event.get_state(), event.get_keyval())
+
+		if(result.valid) {
+			entry.set_text(result.string)
+			controller.emit(controller.events.SHORTCUT_INPUT, this, result.string)
+		} else if(result.string === 'BackSpace') {
+			const erased = entry.get_text()
+			entry.set_text('')
+			log('Erased shortcut!')
+			controller.emit(controller.events.SHORTCUT_ERASED, this, result.string)
+		} else {
+			log("Invalid shortcut: {}", result.string)
+		}
+
+		entry.vfunc_move_cursor(
+			Gtk.MovementStep.LOGICAL_POSITIONS,
+			entry.get_text_length(),
+			false)
+	}
 })
 
 module.exports.Widget = SnapShortcutWidget
-module.exports.events = Events

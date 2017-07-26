@@ -1,31 +1,12 @@
 const Lang = require('lang')
 const Gtk = require('gi/gtk')
 const Gio = require('gi/gio')
-const AppInfo = Gio.AppInfo
+const GObject = require('gi/gobject')
 
 const log = require('utils/log')
+const apps = require('utils/apps')
 
-const apps = function(){
-	return new (function(){
-		const self = {
-			all: function() {
-				return AppInfo.get_all().map((info) => {
-					const app = {
-						icon: info.get_icon(),
-						id: info.get_id(),
-						name: info.get_name(),
-						displayName: info.get_display_name(),
-						commandline: info.get_commandline()
-					};
-
-					return app
-				})
-			}
-		}
-
-		return self
-	})()
-}
+const controller = require('widgets/controller')
 
 module.exports.Apps = new Lang.Class({
 	Name: 'Snap.Widgets.Combos.Apps',
@@ -34,11 +15,13 @@ module.exports.Apps = new Lang.Class({
 	_init: function(builder, window) {
 		this.window = window
 		this.model = this.initAppModel(builder)
-		this.combo = this.initAppCombo(builder)
+		this.combo = this.initAppCombo(builder, this.model)
 	},
 
-	initAppCombo: function(builder) {
+	initAppCombo: function(builder, model) {
 		const combo = builder.get_object('shortcut-app-combo')
+
+		combo.set_model(model)
 
 		const iconRenderer = new Gtk.CellRendererPixbuf()
 		const textRenderer = new Gtk.CellRendererText()
@@ -53,43 +36,36 @@ module.exports.Apps = new Lang.Class({
 
 
 		this.comboHandler = combo.connect('changed', Lang.bind(this, this.onComboChange))
-		combo.connect('popdown', Lang.bind(this, this.onPopdown))
-		combo.connect('popup', Lang.bind(this, this.onPopup))
 
 		return combo
 	},
 
 	initAppModel: function(builder) {
-		const model = builder.get_object('apps')
+		const model = new Gtk.ListStore();
+        model.set_column_types ([
+            GObject.TYPE_STRING,
+            Gio.Icon,
+            GObject.TYPE_STRING]);
 
-		apps().all().forEach((app) => {
+		apps.all().forEach((app) => {
 			if(app.icon && app.name && app.name.length > 0) {
-				let iter = model.append()
+				const iter = model.append()
 				model.set(iter, [0], [app.id])
 				model.set(iter, [1], [app.icon])
 				model.set(iter, [2], [app.name])
 			}
 		})
 
-		model.connect('row-deleted', Lang.bind(this, this.onAppDeleted))
-
 		return model
 	},
 
 	onComboChange: function() {
 		const id = this.combo.get_active_id()
+		const app = apps.forId(id)
 		log('App selected: {}', this.combo.get_active_id())
-	},
-
-	onPopdown: function() {
-		log('Popdown!')
-	},
-
-	onPopup: function() {
-		log('Popup!')
-	},
-
-	onAppDeleted: function() {
-		log('App deleted!')
+		controller.emit(
+		    controller.events.APP_SELECTED,
+		    this.window,
+		    app)
 	}
 })

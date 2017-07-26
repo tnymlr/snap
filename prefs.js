@@ -1,12 +1,12 @@
-const ExtensionUtils = imports.misc.extensionUtils
-const Me = ExtensionUtils.getCurrentExtension()
+var ExtensionUtils = imports.misc.extensionUtils
+var Me = ExtensionUtils.getCurrentExtension()
 
-let snap = null
+const snap = Me.imports.ui
 
 function init() {} //nothing to do here
 
 function buildPrefsWidget(){
-	snap = Me.imports.ui
+
 	return snap.ui.widget
 }
 

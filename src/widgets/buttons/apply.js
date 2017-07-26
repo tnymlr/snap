@@ -1,5 +1,3 @@
-const Lang = require('lang')
-
 const log = require('utils/log')
 
 const factory = require('./factory')

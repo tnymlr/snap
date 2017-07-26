@@ -9,7 +9,7 @@ const rules = [
 		const name = result.string
 		const rule = new RegExp('^[a-zA-Z0-9]+$')
 		return name && rule.test(name)
-	}, '', true),
+	}, '', true, false),
 	modifier(Gdk.ModifierType.SUPER_MASK, 'super', false),
 	modifier(Gdk.ModifierType.MOD1_MASK, 'alt', false),
 	modifier(Gdk.ModifierType.CONTROL_MASK, 'control', false),
@@ -18,7 +18,7 @@ const rules = [
 ]
 
 module.exports = function(state, keyval) {
-	const result = {
+	let result = {
 		valid: false,
 		string: '',
 	}

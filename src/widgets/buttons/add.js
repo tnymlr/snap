@@ -1,13 +1,10 @@
-const Lang = require('lang')
-
 const shortcut = require('widgets/shortcut')
+const controller = require('widgets/controller')
 
 const factory = require('./factory')
 
 module.exports = factory.create('add', (window) => {
-	const widget = new shortcut.Widget()
-	widget.connect(shortcut.events.DELETED,
-		Lang.bind(window, window.deleteShortcut))
-
-	window.shortcutsList.insert(widget, -1)
+	const widget = new shortcut.Widget(window)
+	window.shortcuts.insert(widget, -1)
+	controller.emit(controller.events.SHORTCUT_ADDED, widget)
 })

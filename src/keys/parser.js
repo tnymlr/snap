@@ -35,14 +35,14 @@ const format = require('string-format')
  *   if `name` closure is unavailable, it propagates previous `result.string`
  *
  */
-module.exports = function(condition, name, mandatory) {
+module.exports = function(condition, name, mandatory, wrap = true) {
 	return function(state, result) {
 		if(condition(state, result)) {
 			result.valid &= true
 			if(name.length > 0) {
-				result.string = format("<{}>{}", name, result.string)
+				result.string = format('<{}>{}', name, result.string)
 			} else if(name.length < 1){
-				result.string = format("<{}>", result.string)
+				result.string = format(wrap ? '<{}>' : '{}', result.string)
 			}
 		} else if(mandatory) {
 			result.valid = false

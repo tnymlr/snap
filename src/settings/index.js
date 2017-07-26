@@ -13,6 +13,7 @@ const data = require('utils/data')
 const log = require('utils/log')
 
 const builders = require('./builders')
+const model = require('./model')
 
 module.exports.createSettings = function() {
 	return new builders.SettingsBuilder()

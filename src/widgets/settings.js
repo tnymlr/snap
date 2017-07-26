@@ -26,7 +26,7 @@ module.exports = new Lang.Class({
 		this.builder = this.initBuilder()
 
 		this.mainWidget = this.initMainWidget(this.builder)
-		this.shortcutsList = this.initShortcutsList(this.builder)
+		this.shortcuts = this.initShortcuts(this.builder)
 		this.addButton = new buttons.Add(this.builder, this)
 		this.applyButton = new buttons.Apply(this.builder, this)
 	},
@@ -43,12 +43,8 @@ module.exports = new Lang.Class({
 		return widget
 	},
 
-	initShortcutsList: function(builder) {
+	initShortcuts: function(builder) {
 		const list = builder.get_object('shortcuts-list')
 		return list
-	},
-
-	deleteShortcut: function(widget) {
-		this.shortcutsList.remove(widget)
 	}
 })
