@@ -6,6 +6,9 @@
   "scripts": {
     "watch": "nodemon --exec 'npm run build'",
     "build": "webpack",
+    "prestart": "npm build",
+    "start": "gnome-shell-extension-prefs",
+    "pretest": "webpack --json | webpack-unused",
     "test": "NODE_PATH=src mocha -c -u bdd  --recursive test"
   },
   "author": "Anton Ermolenko",
@@ -14,7 +17,8 @@
     "chai": "^4.1.0",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-unused": "^0.1.0"
   },
   "dependencies": {
     "string-format": "^0.5.0",
