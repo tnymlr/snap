@@ -9,6 +9,8 @@ function init() {
 	settings.set('<alt><super>m', 'evolution')
 	settings.set('<alt><super>b', 'builder')
 	settings.set('<alt>6', 'telegram')
+	settings.set('<alt><super>v', 'code')
+	settings.set('<alt><super>f', 'nautilus')
 }
 
 function enable() {
