@@ -22,7 +22,7 @@ const SnapShortcutWidget = new Lang.Class({
 		this.keymap = this.initKeymap()
 		this.builder = this.initBuilder()
 		this.mainWidget = this.initMainWidget(this.builder)
-		this.appsCombo = new combos.Apps(this.builder, this)
+		this.apps = new combos.Apps(this.builder, this)
 		this.deleteButton = new buttons.Delete(this.builder, this)
 		this.entry = this.initEntry(this.builder)
 

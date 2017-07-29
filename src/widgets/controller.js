@@ -13,7 +13,7 @@ const Events = {
 
 const signals = {}
 signals[Events.SHORTCUT_ADDED] = {
-    param_types: [ Gtk.ListBoxRow ]
+    param_types: [ Gtk.ListBoxRow, GObject.Object ]
 }
 signals[Events.SHORTCUT_DELETED] = {
     param_types: [ Gtk.ListBoxRow ]
