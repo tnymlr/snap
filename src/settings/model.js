@@ -1,5 +1,7 @@
 const _ = require('underscore')
 
+const log = require('utils/log')
+
 const builder = function(self, source) {
      const builder = {}
 
@@ -22,13 +24,22 @@ const builder = function(self, source) {
 
 const shortcuts = _.extend([], {
     create: function(source) {
-        const store = this
         const item = {
-            source: source
+            source: source,
+            app: null,
+            shortcut: null
         }
         this.push(item)
 
         return  _.extend(item, builder(this, source))
+    },
+
+    remove: function(source) {
+        this.forEach((item, idx) => {
+            if(item.source === source) {
+                this.splice(idx, 1)
+            }
+        })
     },
 
     setApp: function(source, app) {
@@ -48,6 +59,8 @@ const shortcuts = _.extend([], {
 
         if(item) {
             action(item, this)
+        } else {
+            log('Unable to find model [source={}]', source)
         }
     }
 })
