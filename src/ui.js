@@ -21,37 +21,41 @@ const SnapListener = new Lang.Class({
             Lang.bind(this, this.onApp))
         controller.connect(
             controller.events.SHORTCUT_INPUT,
-            Lang.bind(this, this.onKey)),
-        controller.connect_(
+            Lang.bind(this, this.onKey))
+        controller.connect(
             controller.events.SHORTCUT_ERASED,
             Lang.bind(this, this.onErase))
+        controller.connect(
+            controller.events.APPLY,
+            Lang.bind(this, this.onApply))
     },
 
-    onAdd: function(row, app) {
-        log(
-            'Got a new row [{}] with default app [id={}, name={}]',
-            row,
-            app.id,
-            app.name)
-
+    onAdd: function(source, row, app) {
         model.create(row)
             .withApp(app)
     },
 
-    onDelete: function(row) {
-        log('Lost a row [{}]', row)
+    onDelete: function(source, row) {
+        model.remove(row)
     },
 
-    onApp: function(row, app) {
-        log('Got an app [row={}, app={}]', row, app)
+    onApp: function(source, row, app) {
+        model.setApp(row, app)
     },  
 
-    onKey: function(row, key) {
-        log('Got a key [row={}, key={}]', row, key)
+    onKey: function(source, row, key) {
+        model.setShortcut(row, key)
     },
 
-    onErase: function(row, key) {
-        log('Lost a key [row={}, key={}]', row, key)
+    onErase: function(source, row, key) {
+        model.setShortcut(row, '')
+    },
+    
+    onApply: function(source) {
+        log('Applying:')
+        model.forEach((item) => {
+            log('\tShortcut [app={}, key={}]', item.app ? item.app.id : null, item.shortcut)
+        })
     }
 })
 

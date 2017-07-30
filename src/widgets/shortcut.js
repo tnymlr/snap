@@ -1,4 +1,5 @@
 const Lang = require('lang')
+const GObject = require('gi/gobject')
 const Gtk = require('gi/gtk')
 const Gdk = require('gi/gdk')
 

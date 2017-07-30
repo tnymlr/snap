@@ -63,4 +63,17 @@ describe('model', function(){
             expect(item.shortcut).to.be.equal(shortcut)
         })
     })
+
+    it('should be able to delete shortcut for specified source', function(){
+        const source = {}
+        const length = model.length
+
+        model.create(source)
+
+        expect(model.length).to.be.equal(length + 1) //just in case
+
+        model.remove(source)
+
+        expect(model.length).to.be.equal(length) //the actual test
+    })
 })

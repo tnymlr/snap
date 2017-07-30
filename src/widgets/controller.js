@@ -8,7 +8,8 @@ const Events = {
     SHORTCUT_DELETED: 'shortcut-deleted',
     APP_SELECTED: 'app-selected',
 	SHORTCUT_INPUT: 'shortcut-input',
-	SHORTCUT_ERASED: 'shortcut-erased'
+    SHORTCUT_ERASED: 'shortcut-erased',
+    APPLY: 'settings-apply'
 }
 
 const signals = {}
@@ -19,13 +20,16 @@ signals[Events.SHORTCUT_DELETED] = {
     param_types: [ Gtk.ListBoxRow ]
 }
 signals[Events.APP_SELECTED] = {
-    param_types: [ Gtk.ListBoxRow, Gio.AppInfo ]
+    param_types: [ Gtk.ListBoxRow, GObject.Object ]
 }
 signals[Events.SHORTCUT_INPUT] = {
 	param_types: [ Gtk.ListBoxRow, GObject.String ]
 }
 signals[Events.SHORTCUT_ERASED] = {
 	param_types: [ Gtk.ListBoxRow, GObject.String ]
+}
+signals[Events.APPLY] = {
+    param_types: []
 }
 
 const Controller = new Lang.Class({
