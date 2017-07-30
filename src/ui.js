@@ -1,8 +1,10 @@
 const Lang = require('lang')
 const widgets = require('widgets')
 
+const settings = require('settings')
+
 const controller = require('widgets/controller')
-const model = require('settings/model')
+const model = require('utils/model')
 
 const log = require('utils/log')
 
@@ -52,13 +54,20 @@ const SnapListener = new Lang.Class({
     },
     
     onApply: function(source) {
-        log('Applying:')
+        log('Applying...')
+
         model.forEach((item) => {
-            log('\tShortcut [app={}, key={}]', item.app ? item.app.id : null, item.shortcut)
+            settings.create()
+                .withId(item.app.id)
+                .withName(item.app.name)
+                .withExecutable(item.app.commandline)
+                .withShortcut(item.shortcut)
         })
+        
+        settings.save()
     }
 })
-
+settings
 const SnapWidget = new Lang.Class({
 	Name: 'SnapWidget',
 
