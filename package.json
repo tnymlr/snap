@@ -4,10 +4,8 @@
   "description": "Snap is gnome-shell extension which allows you to assign keyboard shortcuts for applications windows",
   "main": "src.js",
   "scripts": {
-    "watch": "nodemon --exec 'npm run build'",
     "build": "webpack",
-    "prestart": "npm build",
-    "start": "gnome-shell-extension-prefs",
+    "run": "webpack && gnome-shell-extension-prefs",
     "pretest": "webpack --json | webpack-unused",
     "test": "NODE_PATH=src mocha -c -u bdd  --recursive test"
   },
