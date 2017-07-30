@@ -12,6 +12,7 @@ const SnapListener = new Lang.Class({
     Name: "SnapListener",
 
     _init: function(){
+        this.load()
         controller.connect(
             controller.events.SHORTCUT_ADDED,
             Lang.bind(this, this.onAdd))
@@ -30,6 +31,19 @@ const SnapListener = new Lang.Class({
         controller.connect(
             controller.events.APPLY,
             Lang.bind(this, this.onApply))
+    },
+
+    load: function() {
+        const shortcuts = settings.load()
+
+        log('Reading shortcuts...')
+        shortcuts.forEach((shortcut) => {
+            log('\t\t Shortcut [id={}, name={}, commandline={}, shortcut={}]',
+                shortcut.id,
+                shortcut.name,
+                shortcut.executable,
+                shortcut.shortcut)
+        })
     },
 
     onAdd: function(source, row, app) {
@@ -67,7 +81,7 @@ const SnapListener = new Lang.Class({
         settings.save()
     }
 })
-settings
+
 const SnapWidget = new Lang.Class({
 	Name: 'SnapWidget',
 

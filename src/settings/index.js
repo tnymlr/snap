@@ -14,6 +14,28 @@ const data = require('utils/data')
 const log = require('utils/log')
 
 const source = Source.new_from_directory(data.dir, null, false)
+const GString = new VariantType('s')
+const GTuple = VariantType.new_tuple(Array(4).fill(GString))
+
+const KEY = 'shortcuts'
+
+const schema = function() {
+	log('Preparing schema...')
+	const schema = source.lookup('org.gnome.shell.extensions.snap', true)
+	log('Schema is ready!')
+
+	return schema
+}
+
+const open = function() {
+	log('Opening settings...')
+	const settings = new Settings({
+		settings_schema: schema()
+	})
+	log('Settings is ready!')
+
+	return settings
+}
 
 const shortcut = function(item) {
 	return {
@@ -85,23 +107,37 @@ module.exports = _.extend([], {
 		return builder(shortcut(item))
 	},
 
-	save: function(){
+	load: function() {
+		log('Loading settings...')
+
+		const result = []
+
+		const settings = open()
+		
+		log('Getting value...')
+		const value = settings.get_value(KEY)
+		log('Value is loaded!')
+
+		const settingsLength = value.n_children() // O(1) =(
+		for(let idx = 0; idx < settingsLength; idx++) {
+			const tuple = value.get_child_value(idx)
+			const fieldsLength = tuple.n_children()
+			const item = []
+			for(let kdx = 0; kdx < fieldsLength; kdx++) {
+				const field = tuple.get_child_value(kdx)
+				const [str, len] = field.get_string()
+				item.push(str)
+			}
+			result.push(shortcut(item))
+		}
+
+		return result
+	},
+
+	save: function() {
 		log('Saving settings...')
 
-		log('Preparing schema...')
-		const schema = source.lookup('org.gnome.shell.extensions.snap', true)
-		log('Schema is ready!')
-
-		log('Opening settings...')
-		const settings = new Settings({
-			settings_schema: schema
-		})
-		log('Settings is ready!')
-
-		log('Preparing GLib Types...')
-		const GString = new VariantType('s')
-		const GTuple = VariantType.new_tuple(Array(4).fill(GString))
-		log('GTypes is ready!')
+		const settings = open()
 
 		log('Transposing JS objects into writable GLib Variants...')
 		const value = Variant.new_array(GTuple, this.map((shortcut) => {
@@ -114,7 +150,7 @@ module.exports = _.extend([], {
 		log('Done transposing JS objects into writable GLib Variants')
 
 		log('Ready to save settings...')
-		settings.set_value('shortcuts', value)
+		settings.set_value(KEY, value)
 		log('Settings has been saved!')
 	}
 })
