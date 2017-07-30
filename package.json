@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "compile": "glib-compile-schemas data",
+    "clean": "rm ui.js main.js",
     "run": "webpack && gnome-shell-extension-prefs",
     "pretest": "webpack --json | webpack-unused",
     "test": "NODE_PATH=src mocha -c -u bdd  --recursive test"
