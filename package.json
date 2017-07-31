@@ -21,7 +21,6 @@
     "webpack-unused": "^0.1.0"
   },
   "dependencies": {
-    "string-format": "^0.5.0",
-    "underscore": "^1.8.3"
+    "string-format": "^0.5.0"
   }
 }
