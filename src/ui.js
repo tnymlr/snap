@@ -3,8 +3,6 @@ const widgets = require('widgets')
 
 const settings = require('settings')
 
-const model = require('utils/model')
-
 const log = require('utils/log')
 
 const SnapWidget = new Lang.Class({

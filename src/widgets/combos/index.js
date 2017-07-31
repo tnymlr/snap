@@ -3,22 +3,22 @@ const Gtk = require('gi/gtk')
 const Gio = require('gi/gio')
 const GObject = require('gi/gobject')
 
+const settings = require('settings')
+
 const log = require('utils/log')
 const apps = require('utils/apps')
-
-const controller = require('widgets/controller')
 
 module.exports.Apps = new Lang.Class({
 	Name: 'Snap.Widgets.Combos.Apps',
 	GTypeName: 'SnapWidgetsCombosApp',
 
-	_init: function(builder, window) {
+	_init: function(builder, window, shortcut = null) {
 		this.window = window
 		this.model = this.initAppModel(builder)
-		this.combo = this.initAppCombo(builder, this.model)
+		this.combo = this.initAppCombo(builder, this.model, shortcut)
 	},
 
-	initAppCombo: function(builder, model) {
+	initAppCombo: function(builder, model, shortcut) {
 		const combo = builder.get_object('shortcut-app-combo')
 
 		combo.set_model(model)
@@ -32,9 +32,12 @@ module.exports.Apps = new Lang.Class({
 		combo.add_attribute(iconRenderer, 'gicon', 1)
 		combo.add_attribute(textRenderer, 'text', 2)
 
-		combo.set_active(0)
-
-
+		if(shortcut) {
+			combo.set_active_id(shortcut.id)
+		} else {
+			combo.set_active(0)
+		}
+		
 		this.comboHandler = combo.connect('changed', Lang.bind(this, this.onComboChange))
 
 		return combo
@@ -60,12 +63,14 @@ module.exports.Apps = new Lang.Class({
 	},
 
 	onComboChange: function() {
-		const id = this.combo.get_active_id()
-		const app = apps.forId(id)
-		log('App selected: {}', this.combo.get_active_id())
-		controller.emit(
-		    controller.events.APP_SELECTED,
-		    this.window,
-		    app)
+		const app = apps.forId(this.activeId)
+		
+		const shortcut = settings.get(this.activeId)
+		shortcut.name = app.name
+		shortcut.exec = app.commandline
+	},
+	
+	get activeId() {
+		return this.combo.get_active_id()
 	}
 })

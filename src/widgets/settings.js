@@ -7,7 +7,6 @@ const apps = require('utils/apps')
 
 const settings = require('settings')
 
-const controller = require('./controller')
 const buttons = require('./buttons')
 const shortcut = require('./shortcut')
 
@@ -54,14 +53,8 @@ module.exports = new Lang.Class({
 
 	initSettings: function() {
 		settings.load().forEach((item) => {
-			const widget = new shortcut.Widget(window)
+			const widget = new shortcut.Widget(this, item)
 			this.shortcuts.insert(widget, -1)
-
-			const app = apps.forId(item.id)
-			controller.emit(controller.events.SHORTCUT_ADDED, widget, app)
-
-			widget.apps.combo.set_active_id(item.id)
-			widget.updateEntry(item.shortcut)
 		})
 	}
 })

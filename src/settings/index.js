@@ -8,8 +8,6 @@ const GLib = require('gi/glib')
 const Variant = GLib.Variant
 const VariantType = GLib.VariantType
 
-const _ = require('underscore')
-
 const data = require('utils/data')
 const log = require('utils/log')
 
@@ -37,7 +35,9 @@ const open = function() {
 	return settings
 }
 
-const shortcut = function(item) {
+const items = []
+
+const shortcutFor = function(item) {
 	return {
 		get id() {
 			return item[0]
@@ -55,62 +55,52 @@ const shortcut = function(item) {
 			item[1] = name
 		},
 		
-		get shortcut() {
+		get key() {
 			return item[2]
 		},
 
-		set shortcut(shortcut) {
-			item[2] = shortcut
+		set key(key) {
+			item[2] = key
 		},
 
-		get executable() {
+		get exec() {
 			return item[3]
 		},
 
-		set executable(executable) {
+		set exec(executable) {
 			item[3] = executable
+		},
+
+		delete () {
+			items.forEach((item, idx) => {
+				if(this.id === shortcutFor(item).id) {
+					items.splice(idx, 1)
+				}
+			})
 		}
 	}
 }
 
-const builder = function(self) {
-	const builder = {}
+module.exports = {
+	get(id) {
+		let item = items.find((item) => shortcutFor(item).id === id)
 
-	builder.withId = function(id) {
-		self.id = id
-		return builder
-	}
+		let shortcut
 
-	builder.withName = function(name) {
-		self.name = name
-		return builder
-	}
-
-	builder.withExecutable = function(executable) {
-		self.executable = executable
-		return builder
-	}
-
-	builder.withShortcut = function(shortcut) {
-		self.shortcut = shortcut
-		return builder
-	}
-
-	return builder
-}
-
-module.exports = _.extend([], {
-	create: function() {
-		const item = []
-		this.push(item)
-
-		return builder(shortcut(item))
+		if(item) {
+			shortcut = shortcutFor(item)
+		} else {
+			item = []
+			items.push(item)
+			shortcut = shortcutFor(item)
+			shortcut.id = id
+		}
+		
+		return shortcut
 	},
 
-	load: function() {
+	load() {
 		log('Loading settings...')
-
-		const result = []
 
 		const settings = open()
 		
@@ -128,21 +118,34 @@ module.exports = _.extend([], {
 				const [str, len] = field.get_string()
 				item.push(str)
 			}
-			result.push(shortcut(item))
+			items.push(item)
 		}
 
-		return result
+		return this.all
 	},
 
-	save: function() {
+	get all() {
+		return items.map((item) => shortcutFor(item))
+	},
+
+	save() {
 		log('Saving settings...')
 
 		const settings = open()
 
 		log('Transposing JS objects into writable GLib Variants...')
-		const value = Variant.new_array(GTuple, this.map((shortcut) => {
-			log('\tTrying to transpose [shortcut={}]', shortcut)
-			return Variant.new_tuple(shortcut.map((record) => {
+		const value = Variant.new_array(GTuple, items.filter((item) => {
+			const shortcut = shortcutFor(item)
+			const result = shortcut.id && shortcut.name && shortcut.key && shortcut.exec
+
+			if(!result) {
+				log('\tItem [{}] missing required field, skipping...', item)
+			}
+
+			return result
+		}).map((item) => {
+			log('\tTrying to transpose [item={}]', item)
+			return Variant.new_tuple(item.map((record) => {
 				log('\t\tTransposing field [value={}]', record)
 				return Variant.new_string(record)
 			}))
@@ -153,4 +156,4 @@ module.exports = _.extend([], {
 		settings.set_value(KEY, value)
 		log('Settings has been saved!')
 	}
-})
+}
