@@ -64,21 +64,27 @@ const SnapShortcutWidget = new Lang.Class({
 		const result = shortcut(event.get_state(), event.get_keyval())
 
 		if(result.valid) {
-			entry.set_text(result.string)
-			controller.emit(controller.events.SHORTCUT_INPUT, this, result.string)
+			this.updateEntry(result.string)
 		} else if(result.string === 'BackSpace') {
-			const erased = entry.get_text()
-			entry.set_text('')
-			log('Erased shortcut!')
-			controller.emit(controller.events.SHORTCUT_ERASED, this, result.string)
-		} else {
-			log("Invalid shortcut: {}", result.string)
+			this.updateEntry('')
 		}
+	},
 
+	updateEntry: function(value) {
+		const entry = this.entry
+		const previous = entry.get_text()
+
+		entry.set_text(value)
 		entry.vfunc_move_cursor(
 			Gtk.MovementStep.LOGICAL_POSITIONS,
 			entry.get_text_length(),
 			false)
+
+		if(value) {
+			controller.emit(controller.events.SHORTCUT_INPUT, this, value)
+		} else {
+			controller.emit(controller.events.SHORTCUT_ERASED, this, previous)
+		}
 	}
 })
 

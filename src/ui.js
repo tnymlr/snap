@@ -11,7 +11,7 @@ const log = require('utils/log')
 const SnapListener = new Lang.Class({
     Name: "SnapListener",
 
-    _init: function(){
+    _init: function(window){
         this.load()
         controller.connect(
             controller.events.SHORTCUT_ADDED,
@@ -86,8 +86,8 @@ const SnapWidget = new Lang.Class({
 	Name: 'SnapWidget',
 
 	_init: function(){
-		this.settings = new widgets.SettingsWidget()
-		this.listener = new SnapListener()
+        this.listener = new SnapListener()
+        this.settings = new widgets.SettingsWidget()
 	},
 
 	get widget(){
