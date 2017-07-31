@@ -7,21 +7,25 @@ const windows = require('windows')
 const Main = require('ui/main')
 const Lang = require('lang')
 
+const settings = require('settings')
+
+const manager =  new keys.KeyManager()
 const KeyController = new Lang.Class({
 	Name: 'SnapKeyController',
 
 	_init: function() {
 	},
 
-	setupKeys: function(settings){
-		this.manager = new keys.KeyManager()
+	setupKeys: function(keys){
+		for(let shortcut of keys) {
+			const key = shortcut.key
+			const app = shortcut.app
 
-		for(let [key, app] of settings.entries()) {
-			this.manager.startListenFor(key, function(key) {
+			manager.startListenFor(key, function(key) {
 				windows.Manager.getWindows().forEach((w) => {
-					let wmClass = w.wmClass.toLowerCase()
+					const wmClass = w.wmClass.toLowerCase()
 
-					if(wmClass.indexOf(settings.get(key).toLowerCase()) >= 0) {
+					if(app.toLowerCase().indexOf(wmClass) >= 0) {
 						w.raise()
 					}
 				})
@@ -30,7 +34,7 @@ const KeyController = new Lang.Class({
 	},
 
 	disableKeys: function(){
-		this.manager.stopListenForAll()
+		manager.stopListenForAll()
 	}
 })
 
@@ -82,9 +86,12 @@ const SnapExtension = new Lang.Class({
 		this.keyController = new KeyController()
 	},
 
-	enable: function(settings){
+	enable: function(){
 //		this.menuController.setupMenu()
-		this.keyController.setupKeys(settings)
+		const keys = settings.load().map((shortcut) => {
+			return {key: shortcut.key, app: shortcut.name}
+		})
+		this.keyController.setupKeys(keys)
 //		Main.panel.addToStatusArea('SnapMenu', this.menuController.menu)
 	},
 
