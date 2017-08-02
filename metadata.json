@@ -1,5 +1,5 @@
 {
-	"uuid": "snap@aner.id.au",
+	"uuid": "snap@extensions.shell.gnome.org",
 	"name": "Snap",
 	"description": "Snap is an extension to assign keyboard shortcuts for your favorite applications",
 	"shell-version": [
