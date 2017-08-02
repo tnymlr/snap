@@ -20,7 +20,7 @@ Once it has been built just copy whole folder into `~/.local/share/gnome-shell/e
 
 To use this extension you need to assign a keyboard shortcut to an app first.
 
-Once you've done it you can summon all of the windows of the app by hitting that keyboard shortct
+Once you've done it you can summon all of the windows of the app by hitting that keyboard shortcut
 
 ### Assign Shortcut
 
@@ -31,7 +31,7 @@ There are two ways to do it:
  - using [Gnome Tweak Tool](https://wiki.gnome.org/Apps/GnomeTweakTool) - just open it, go to extensions, find Snap and open settings.
  - using command line - just run:
    ```bash
-    $ gnome-shell-extension-prefs 
+   $ gnome-shell-extension-prefs 
    ```
    Find Snap in the list and click settings icon.
 
@@ -45,8 +45,8 @@ You can add and remove shortcuts using settings UI.
 
  You can click 'Delete' button to delete a shortcut
 
- *NOTE:* not all shortcuts are valid.
- Valid shortcuts:
+ *NOTE:* not all of the shortcuts are valid.
+ Valid shortcut:
   - Has exactly one letter
   - Has one or more modifiers (ctrl or alt or super or all of them)
 
