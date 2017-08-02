@@ -22,12 +22,35 @@ const KeyController = new Lang.Class({
 			const app = shortcut.app
 
 			manager.startListenFor(key, function(key) {
-				windows.Manager.getWindows().forEach((w) => {
+				//we take all the windows
+				windows.Manager.getWindows().map((w) => {
 					const wmClass = w.wmClass.toLowerCase()
 
-					if(app.toLowerCase().indexOf(wmClass) >= 0) {
-						w.raise()
+					// and we take the app and count how much words in the name
+					// of an app we can find in window class.
+					// this is 'weight' of our window
+					const window =  {
+						weight: app.toLowerCase()
+							.split(' ')
+							.filter((word) => wmClass.indexOf(word) >= 0)
+							.length,
+						window: w
 					}
+					return window
+				}).sort((a, b) => { //windows with bigger weight go to the top.
+					return a.weight < b.weight
+						? -1
+						: a.weight > b.weight
+							? 1
+							: 0
+				}).reverse().reduce((col, val) => { // and we take only windows with largest weight
+					if(col.length < 1 || col[col.length - 1].weight === val.weight) {
+						return col.concat([val])
+					}
+
+					return col
+				}, []).forEach((item) => { // bring it on
+					item.window.raise()
 				})
 			})
 		}
@@ -37,46 +60,6 @@ const KeyController = new Lang.Class({
 	disableKeys: function(){
 		manager.stopListenForAll()
 	}
-})
-
-const MenuController = new Lang.Class({
-	Name: 'SnapMenuController',
-
-	_init: function(panel) {
-		this._menu = null
-	},
-
-	get menu() {
-		return this._menu
-	},
-
-	setupMenu: function() {
-		this._menu = new Menu()
-
-		windows.Manager.getWindows().forEach((w) => {
-			let title = w.title
-
-			if(!title || title.length < 1) {
-				title = w.wmClass
-			} else {
-				title += " : " + w.wmClass
-			}
-
-			this._menu.addDynamicItem(
-				title,
-				'system-run-symbolic',
-				function (menuItem, event) {
-					w.raise()
-				})
-		})
-	},
-
-	cleanMenu: function() {
-		if(this._menu) {
-			this._menu.destroy()
-			this._menu = null
-		}
-	},
 })
 
 const SnapExtension = new Lang.Class({
