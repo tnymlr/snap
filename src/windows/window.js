@@ -8,20 +8,20 @@ let windows = new WeakMap()
 module.exports = new Lang.Class({
 	Name: 'Window',
 
-	_init: function(actor) {
+	_init(actor) {
 		actors.set(this, actor)
 		windows.set(this, actor.meta_window)
 	},
 
-	hide: function() {
+	hide() {
 		this.actor.hide()
 	},
 
-	show: function() {
+	show() {
 		this.actor.show()
 	},
 
-	raise: function () {
+	raise () {
 		this.actor.raise_top()
 		this.window.activate(0)
 	},

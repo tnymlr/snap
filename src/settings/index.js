@@ -35,7 +35,33 @@ const open = function() {
 	return settings
 }
 
-const items = []
+const load = function() {
+	log('Loading settings...')
+
+	const items = []
+	const settings = open()
+	
+	log('Getting value...')
+	const value = settings.get_value(KEY)
+	log('Value is loaded!')
+
+	const settingsLength = value.n_children() // O(1) =(
+	for(let idx = 0; idx < settingsLength; idx++) {
+		const tuple = value.get_child_value(idx)
+		const fieldsLength = tuple.n_children()
+		const item = []
+		for(let kdx = 0; kdx < fieldsLength; kdx++) {
+			const field = tuple.get_child_value(kdx)
+			const [str, len] = field.get_string()
+			item.push(str)
+		}
+		items.push(item)
+	}
+
+	return items
+}
+
+const items = load()
 
 const shortcutFor = function(item) {
 	return {
@@ -97,31 +123,6 @@ module.exports = {
 		}
 		
 		return shortcut
-	},
-
-	load() {
-		log('Loading settings...')
-
-		const settings = open()
-		
-		log('Getting value...')
-		const value = settings.get_value(KEY)
-		log('Value is loaded!')
-
-		const settingsLength = value.n_children() // O(1) =(
-		for(let idx = 0; idx < settingsLength; idx++) {
-			const tuple = value.get_child_value(idx)
-			const fieldsLength = tuple.n_children()
-			const item = []
-			for(let kdx = 0; kdx < fieldsLength; kdx++) {
-				const field = tuple.get_child_value(kdx)
-				const [str, len] = field.get_string()
-				item.push(str)
-			}
-			items.push(item)
-		}
-
-		return this.all
 	},
 
 	get all() {

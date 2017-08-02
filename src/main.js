@@ -1,7 +1,6 @@
 const log = require('utils/log')
 const keys = require('keys')
 
-const Menu = require('menu')
 const windows = require('windows')
 
 const Main = require('ui/main')
@@ -17,6 +16,7 @@ const KeyController = new Lang.Class({
 	},
 
 	setupKeys: function(keys){
+		log('Received settings! Setting up listeners for keys...')
 		for(let shortcut of keys) {
 			const key = shortcut.key
 			const app = shortcut.app
@@ -31,6 +31,7 @@ const KeyController = new Lang.Class({
 				})
 			})
 		}
+		log('Done setting up listeners for keys!')
 	},
 
 	disableKeys: function(){
@@ -82,21 +83,24 @@ const SnapExtension = new Lang.Class({
 	Name: 'SnapExtension',
 
 	_init: function(){
-//		this.menuController = new MenuController()
 		this.keyController = new KeyController()
 	},
 
 	enable: function(){
-//		this.menuController.setupMenu()
-		const keys = settings.load().map((shortcut) => {
-			return {key: shortcut.key, app: shortcut.name}
+		log('Enabling...')
+
+		log('Loading shortcuts from settings...')
+		const shortcuts = settings.all.map((item) => {
+			const shortcut = {key: item.key, app: item.name}
+			log('Got shortcut [key={}, app={}]', shortcut.key, shortcut.app)
+			return shortcut
 		})
-		this.keyController.setupKeys(keys)
-//		Main.panel.addToStatusArea('SnapMenu', this.menuController.menu)
+		log('Done loading shortcuts from settings!')
+		this.keyController.setupKeys(shortcuts)
 	},
 
 	disable: function(){
-//		this.menuController.cleanMenu()
+		log('Disabling...')
 		this.keyController.disableKeys()
 	}
 })

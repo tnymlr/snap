@@ -17,21 +17,19 @@ module.exports = {
 			this.handler = gnome.display.connect(
 				'accelerator-activated',
 				Lang.bind(this, function(display, action, deviceId, timestamp){
-					log('Accelerator Activated: [display={}, action={}, deviceId={}, timestamp={}]',
-						display, action, deviceId, timestamp)
 					this._onAccelerator(action)
 				}))
 		},
 
 		startListenFor: function(accelerator, callback){
 			log('Trying to listen for hot key [accelerator={}]', accelerator)
-			let action = gnome.display.grab_accelerator(accelerator)
+			const action = gnome.display.grab_accelerator(accelerator)
 
 			if(action == Meta.KeyBindingAction.NONE) {
 				log('Unable to grab accelerator [binding={}]', accelerator)
 			} else {
 				log('Grabbed accelerator [action={}]', action)
-				let name = Meta.external_binding_name_for_action(action)
+				const name = Meta.external_binding_name_for_action(action)
 				log('Received binding name for action [name={}, action={}]',
 					name, action)
 				
@@ -47,11 +45,11 @@ module.exports = {
 		},
 
 		stopListenFor: function(action) {
-			let grabber = this.grabbers.get(action)
+			const grabber = this.grabbers.get(action)
 			log('Stopping listening for [binding={}, action={}, name={}]',
 				grabber.accelerator, action, grabber.name)
 
-			let success = gnome.display.ungrab_accelerator(action)
+			const success = gnome.display.ungrab_accelerator(action)
 			if(success) {
 				log('Stopped listening for [binding={}, action={}, name={}]',
 					grabber.accelerator, action, grabber.name)
@@ -71,20 +69,13 @@ module.exports = {
 			for(let [action, grabber] of this.grabbers.entries()) {
 				success = success && this.stopListenFor(action)
 			}
-
-			if(success) {
-				gnome.display.disconnect(this.handler)
-				log('All registered key bindings have been released')
-			}
 		},
 
 		_onAccelerator: function(action) {
-			let grabber = this.grabbers.get(action)
+			const grabber = this.grabbers.get(action)
 
 			if(grabber) {
 				grabber.callback(grabber.accelerator)
-			} else {
-				log('No listeners [action={}]', action)
 			}
 		}
 	})

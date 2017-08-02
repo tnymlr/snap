@@ -52,7 +52,7 @@ module.exports = new Lang.Class({
 	},
 
 	initSettings: function() {
-		settings.load().forEach((item) => {
+		settings.all.forEach((item) => {
 			const widget = new shortcut.Widget(this, item)
 			this.shortcuts.insert(widget, -1)
 		})
