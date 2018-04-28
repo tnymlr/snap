@@ -2,6 +2,6 @@ const SettingsWidget = require('./settings')
 const ShortcutWidget = require('./shortcut')
 
 module.exports = {
-	SettingsWidget: SettingsWidget,
-	ShortcutWidget: ShortcutWidget
+  SettingsWidget: SettingsWidget,
+  ShortcutWidget: ShortcutWidget
 }

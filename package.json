@@ -9,7 +9,7 @@
     "clean": "rm ui.js main.js",
     "run": "webpack && gnome-shell-extension-prefs",
     "pretest": "webpack --json | webpack-unused",
-    "test": "NODE_PATH=src mocha -c -u bdd  --recursive test"
+    "test": "standard"
   },
   "author": "Anton Ermolenko",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "chai": "^4.1.0",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
+    "standard": "^11.0.1",
     "webpack": "^2.2.1",
     "webpack-unused": "^0.1.0"
   },

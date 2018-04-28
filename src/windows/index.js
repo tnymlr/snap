@@ -1,4 +1,4 @@
 module.exports = {
-	Window: require('windows/window'),
-	Manager: require('windows/manager')
+  Window: require('windows/window'),
+  Manager: require('windows/manager')
 }

@@ -1,22 +1,17 @@
 const Lang = require('lang')
 const widgets = require('widgets')
 
-const settings = require('settings')
-
-const log = require('utils/log')
-
 const SnapWidget = new Lang.Class({
-	Name: 'SnapWidget',
+  Name: 'SnapWidget',
 
-	_init: function(){
-        this.settings = new widgets.SettingsWidget()
-	},
+  _init: function () {
+    this.settings = new widgets.SettingsWidget()
+  },
 
-	get widget(){
-		this.settings.show_all()
-		return this.settings
-	}
-});
+  get widget () {
+    this.settings.show_all()
+    return this.settings
+  }
+})
 
 module.exports = new SnapWidget()
-

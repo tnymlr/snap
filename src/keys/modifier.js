@@ -6,8 +6,8 @@ const parser = require('./parser')
  * Gdk.ModifierMask is applied and modify keyboard shortcut string
  * accordingly
  */
-module.exports = function(mask, name, mandatory) {
-	return parser((state) => {
-		return state & mask
-	}, name, mandatory)
+module.exports = function (mask, name, mandatory) {
+  return parser((state) => {
+    return state & mask
+  }, name, mandatory)
 }
