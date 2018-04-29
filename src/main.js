@@ -15,9 +15,9 @@ const KeyController = new Lang.Class({
   _init: function () {
   },
 
-  setupKeys: function (keys) {
+  setupKeys: function (shortcuts) {
     log('Received settings! Setting up listeners for keys...')
-    for (let shortcut of keys) {
+    for (let shortcut of shortcuts) {
       const key = shortcut.key
       const app = shortcut.app
 
