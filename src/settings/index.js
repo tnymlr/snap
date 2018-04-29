@@ -43,7 +43,7 @@ const load = function () {
   const value = settings.get_value(KEY)
   log('Value is loaded!')
 
-  const settingsLength = value.n_children() // O(1) =(
+  const settingsLength = value.n_children() // O(n) =(
   for (let idx = 0; idx < settingsLength; idx++) {
     const tuple = value.get_child_value(idx)
     const fieldsLength = tuple.n_children()
@@ -96,6 +96,7 @@ const shortcutFor = function (item) {
     },
 
     delete () {
+      log('Deleting item [id={}, name={}, key={}, exec={}]', this.id, this.name, this.key, this.exec)
       items.forEach((item, idx) => {
         if (this.id === shortcutFor(item).id) {
           items.splice(idx, 1)
@@ -105,7 +106,54 @@ const shortcutFor = function (item) {
   }
 }
 
+const readTuple = (tuple) => {
+  const fields = ['id', 'name', 'key', 'exec']
+
+  const result = {}
+
+  for (let i = 0; i++; i < tuple.length) {
+    result[fields[i]] = tuple[i]
+  }
+
+  return result
+}
+
+const start = (ctx) => {
+  const tuples = load()
+
+  return Object.assign({
+    items: tuples.map(readTuple)
+  }, ctx)
+}
+
+const stop = (ctx) => Object.assign(ctx, {items: []})
+
 module.exports = {
+  create () {
+    let active = false
+    let ctx = {items: []}
+
+    return {
+      start () {
+        if (!active) {
+          ctx = start(ctx)
+          active = true
+        }
+      },
+
+      stop () {
+        if (active) {
+          ctx = stop(ctx)
+          active = false
+        }
+      },
+
+      items () {
+        return ctx.items
+      }
+    }
+  },
+
   get (id) {
     let item = items.find((item) => shortcutFor(item).id === id)
 
