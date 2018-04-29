@@ -62,11 +62,13 @@ module.exports.Apps = new Lang.Class({
   },
 
   onComboChange: function () {
-    const app = apps.forId(this.activeId)
+    if (this.activeId) {
+      const app = apps.forId(this.activeId)
 
-    const shortcut = settings.get(this.activeId)
-    shortcut.name = app.name
-    shortcut.exec = app.commandline
+      const shortcut = settings.get(this.activeId)
+      shortcut.name = app.name
+      shortcut.exec = app.commandline
+    }
   },
 
   get activeId () {

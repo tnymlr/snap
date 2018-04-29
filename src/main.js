@@ -1,13 +1,13 @@
 const log = require('utils/log')
-const keys = require('keys')
 
 const windows = require('windows')
 
 const Lang = require('lang')
 
+const keys = require('keys')
+  .create()
 const settings = require('settings')
-
-const manager = keys.create()
+  .create()
 
 const KeyController = new Lang.Class({
   Name: 'SnapKeyController',
@@ -21,7 +21,7 @@ const KeyController = new Lang.Class({
       const key = shortcut.key
       const app = shortcut.app
 
-      manager.onKey(key).do((key) => {
+      keys.onKey(key).do((key) => {
         // we take all the windows
         windows.Manager.getWindows().map((w) => {
           const wmClass = w.wmClass.toLowerCase()
@@ -69,11 +69,15 @@ const SnapExtension = new Lang.Class({
     log('Enabling...')
 
     log('Starting key manager...')
-    manager.start()
-    log('Key manager has been started')
+    keys.start()
+    log('Key manager has started')
+
+    log('Starting settings reader...')
+    settings.start()
+    log('Settings reader has started')
 
     log('Loading shortcuts from settings...')
-    const shortcuts = settings.all.map((item) => {
+    const shortcuts = settings.shortcuts.map((item) => {
       const shortcut = {key: item.key, app: item.name}
       log('Got shortcut [key={}, app={}]', shortcut.key, shortcut.app)
       return shortcut
@@ -88,8 +92,13 @@ const SnapExtension = new Lang.Class({
     log('Disabling...')
 
     log('Stopping key manager...')
-    manager.stop()
+    keys.stop()
     log('Key manager has stopped')
+
+    log('Stopping settings reader')
+    settings.stop()
+    log('Settings reader has stopped')
+
     log('Disabled!')
   }
 })

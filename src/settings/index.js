@@ -106,32 +106,20 @@ const shortcutFor = function (item) {
   }
 }
 
-const readTuple = (tuple) => {
-  const fields = ['id', 'name', 'key', 'exec']
-
-  const result = {}
-
-  for (let i = 0; i++; i < tuple.length) {
-    result[fields[i]] = tuple[i]
-  }
-
-  return result
-}
-
 const start = (ctx) => {
-  const tuples = load()
+  const shortcuts = load()
 
-  return Object.assign({
-    items: tuples.map(readTuple)
-  }, ctx)
+  return Object.assign(ctx, {
+    shortcuts: shortcuts.map(shortcutFor)
+  })
 }
 
-const stop = (ctx) => Object.assign(ctx, {items: []})
+const stop = (ctx) => Object.assign(ctx, {shortcuts: []})
 
 module.exports = {
   create () {
     let active = false
-    let ctx = {items: []}
+    let ctx = {shortcuts: []}
 
     return {
       start () {
@@ -148,8 +136,8 @@ module.exports = {
         }
       },
 
-      items () {
-        return ctx.items
+      get shortcuts() {
+        return ctx.shortcuts
       }
     }
   },

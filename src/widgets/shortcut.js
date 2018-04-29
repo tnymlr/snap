@@ -45,6 +45,7 @@ const SnapShortcutWidget = new Lang.Class({
   initEntry: function (builder, shortcut) {
     const entry = builder.get_object('shortcut-entry')
     if (shortcut) {
+      this.id = shortcut.id
       this.updateEntry(entry, shortcut.key)
     }
     entry.connect('key-press-event', Lang.bind(this, this.entryKeyPressed))
