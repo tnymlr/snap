@@ -1,5 +1,6 @@
-const Lang = require('lang')
 const Gtk = require('gi/gtk')
+
+const thread = require('clojure-thread')
 
 const data = require('utils/data')
 const log = require('utils/log')
@@ -35,14 +36,19 @@ const initMainWidget = (ctx) => {
   })
 }
 
-const initNotebook = (ctx) => {
+const initSwitcher = (ctx) => {
   const builder = ctx.builder
   const glade = ctx.glade
 
-  const notebook = builder.get_object(glade.notebookId)
-  notebook.connect('switch-page', Lang.bind(this, (notebook, page, pageNum, userData) => {
-    log('Page switch! Got [notebook={}, page={}, pageNum={}, userData={}', notebook, page, pageNum, userData)
-  }))
+  const stack = builder.get_object(glade.stackId)
+
+  Object.defineProperty(ctx, 'page', {
+    get () {
+      return stack.get_visible_child_name()
+    },
+
+    set (v) { }
+  })
 
   return ctx
 }
@@ -50,13 +56,28 @@ const initNotebook = (ctx) => {
 const initShortcuts = (ctx) => {
   const glade = ctx.glade
   const builder = ctx.builder
-  const list = builder.get_object(glade.simpleId)
 
-  return Object.assign(ctx, {
-    get shortcuts () {
-      return list
-    }
+  const simple = builder.get_object(glade.lists.simple)
+  const advanced = builder.get_object(glade.lists.advanced)
+
+  Object.defineProperty(ctx, 'shortcuts', {
+    get () {
+      switch (ctx.page) {
+        case glade.pages.simple:
+          log('Using simple list')
+          return simple
+        case glade.pages.advanced:
+          log('Using advanced list')
+          return advanced
+        default:
+          throw new Error('Unknown stack page')
+      }
+    },
+
+    set (v) { }
   })
+
+  return ctx
 }
 
 const initButtons = (ctx) => {
@@ -77,20 +98,26 @@ const create = () => {
     glade: {
       name: 'snap-settings-tabbed',
       mainId: 'settings-box',
-      simpleId: 'shortcuts-simple-list',
-      advancedId: 'shortcuts-advanced-list',
-      notebookId: 'shortcuts-notebook'
+      stackId: 'settings-stack',
+      lists: {
+        simple: 'shortcuts-simple-list',
+        advanced: 'shortcuts-advanced-list'
+      },
+      pages: {
+        simple: 'simple-page',
+        advanced: 'advanced-page'
+      }
     }
   }
 }
 
 const start = (ctx) => {
-  ctx = initBuilder(ctx)
-  ctx = initNotebook(ctx)
-  ctx = initMainWidget(ctx)
-  ctx = initShortcuts(ctx)
-  ctx = initButtons(ctx)
-  return ctx
+  return thread.first(ctx,
+    initBuilder,
+    initSwitcher,
+    initMainWidget,
+    initShortcuts,
+    initButtons)
 }
 
 const stop = (ctx) => Object.assign(ctx, {
