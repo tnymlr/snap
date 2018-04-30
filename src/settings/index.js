@@ -136,7 +136,7 @@ module.exports = {
         }
       },
 
-      get shortcuts() {
+      get shortcuts () {
         return ctx.shortcuts
       }
     }

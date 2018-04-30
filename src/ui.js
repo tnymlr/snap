@@ -5,7 +5,7 @@ const SnapWidget = new Lang.Class({
   Name: 'SnapWidget',
 
   _init: function () {
-    this.settings = widgets.settings;
+    this.settings = widgets.settings
     this.settings.start()
   },
 

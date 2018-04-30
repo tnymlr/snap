@@ -1,11 +1,12 @@
-// const Lang = require('lang')
+const Lang = require('lang')
 const Gtk = require('gi/gtk')
 
 const data = require('utils/data')
+const log = require('utils/log')
 
 // const settings = require('settings')
 //
-// const buttons = require('./buttons')
+const buttons = require('./buttons')
 // const shortcut = require('./shortcut')
 
 const initBuilder = (ctx) => {
@@ -34,18 +35,61 @@ const initMainWidget = (ctx) => {
   })
 }
 
+const initNotebook = (ctx) => {
+  const builder = ctx.builder
+  const glade = ctx.glade
+
+  const notebook = builder.get_object(glade.notebookId)
+  notebook.connect('switch-page', Lang.bind(this, (notebook, page, pageNum, userData) => {
+    log('Page switch! Got [notebook={}, page={}, pageNum={}, userData={}', notebook, page, pageNum, userData)
+  }))
+
+  return ctx
+}
+
+const initShortcuts = (ctx) => {
+  const glade = ctx.glade
+  const builder = ctx.builder
+  const list = builder.get_object(glade.simpleId)
+
+  return Object.assign(ctx, {
+    get shortcuts () {
+      return list
+    }
+  })
+}
+
+const initButtons = (ctx) => {
+  const builder = ctx.builder
+  const addButton = new buttons.Add(builder, ctx)
+  const applyButton = new buttons.Apply(builder, ctx)
+
+  return Object.assign(ctx, {
+    buttons: {
+      add: addButton,
+      apply: applyButton
+    }
+  })
+}
+
 const create = () => {
   return {
     glade: {
       name: 'snap-settings-tabbed',
-      mainId: 'settings-box'
+      mainId: 'settings-box',
+      simpleId: 'shortcuts-simple-list',
+      advancedId: 'shortcuts-advanced-list',
+      notebookId: 'shortcuts-notebook'
     }
   }
 }
 
 const start = (ctx) => {
   ctx = initBuilder(ctx)
+  ctx = initNotebook(ctx)
   ctx = initMainWidget(ctx)
+  ctx = initShortcuts(ctx)
+  ctx = initButtons(ctx)
   return ctx
 }
 
