@@ -8,5 +8,12 @@
 				Keyboard shortcuts that has been configured by user for snapping
 			</description>
 		</key>
+        <key name="shortcuts-advanced" type="a(ssss)">
+            <default>[]</default>
+            <summary>Advanced Shortcuts</summary>
+            <description>
+                Keyboard shortcuts that has been configured by user for snapping using advanced configuration mode
+            </description>
+        </key>
 	</schema>
 </schemalist>
