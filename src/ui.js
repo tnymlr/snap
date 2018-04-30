@@ -5,12 +5,13 @@ const SnapWidget = new Lang.Class({
   Name: 'SnapWidget',
 
   _init: function () {
-    this.settings = new widgets.SettingsWidget()
+    this.settings = widgets.settings;
+    this.settings.start()
   },
 
   get widget () {
-    this.settings.show_all()
-    return this.settings
+    this.settings.widget.show_all()
+    return this.settings.widget
   }
 })
 
