@@ -7,6 +7,60 @@ const settings = require('settings')
 
 const apps = require('utils/apps')
 
+module.exports.Modes = new Lang.Class({
+  Name: 'Snap.Widgets.Combos.Apps',
+  GTypeName: 'SnapWidgetsCombosApp',
+
+  _init: function (builder, window, shortcut = null) {
+    this.window = window
+    this.combo = this.initAppCombo(builder, shortcut)
+  },
+
+  initAppCombo: function (builder, shortcut) {
+    const combo = builder.get_object('shortcut-match-mode-combo')
+
+    combo.set_active(0)
+
+    // this.comboHandler = combo.connect('changed', Lang.bind(this, this.onComboChange))
+
+    return combo
+  },
+
+  // initAppModel: function (builder) {
+  //   const model = new Gtk.ListStore()
+  //   model.set_column_types([
+  //     GObject.TYPE_STRING,
+  //     GObject.TYPE_STRING])
+  //
+  //   [["mode"]]
+  //
+  //   apps.all().forEach((app) => {
+  //     if (app.icon && app.name && app.name.length > 0) {
+  //       const iter = model.append()
+  //       model.set(iter, [0], [app.id])
+  //       model.set(iter, [1], [app.icon])
+  //       model.set(iter, [2], [app.name])
+  //     }
+  //   })
+  //
+  //   return model
+  // },
+
+  onComboChange: function () {
+    if (this.activeId) {
+      const app = apps.forId(this.activeId)
+
+      const shortcut = settings.get(this.activeId)
+      shortcut.name = app.name
+      shortcut.exec = app.commandline
+    }
+  },
+
+  get activeId () {
+    return this.combo.get_active_id()
+  }
+})
+
 module.exports.Apps = new Lang.Class({
   Name: 'Snap.Widgets.Combos.Apps',
   GTypeName: 'SnapWidgetsCombosApp',

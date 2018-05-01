@@ -2,42 +2,21 @@
 <!-- Generated with glade 3.20.4 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkListStore" id="shortcut-match-modes-model">
-    <columns>
-      <!-- column-name id -->
-      <column type="gchararray"/>
-      <!-- column-name mode -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0">Contains</col>
-        <col id="1" translatable="yes">Contains</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Exact</col>
-        <col id="1" translatable="yes">Exact</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Starts With</col>
-        <col id="1" translatable="yes">Starts With</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Ends With</col>
-        <col id="1" translatable="yes">Ends With</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkBox" id="shortcut-box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="valign">baseline</property>
     <property name="spacing">5</property>
     <child>
-      <object class="GtkComboBox" id="shortcut-match-mode-combo">
+      <object class="GtkComboBoxText" id="shortcut-match-mode-combo">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="model">shortcut-match-modes-model</property>
+        <items>
+          <item id="contains" translatable="yes">Contains</item>
+          <item id="starts_with" translatable="yes">Stars With</item>
+          <item id="ends_with" translatable="yes">Ends With</item>
+          <item id="exact" translatable="yes">Exact</item>
+        </items>
       </object>
       <packing>
         <property name="expand">False</property>
